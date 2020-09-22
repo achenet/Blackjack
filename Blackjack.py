@@ -62,3 +62,17 @@ class Hand:
         self.calculateValue()
         return self.value
 
+
+    def display(self):
+        if self.dealer:
+            print("hidden")
+            print(self.cards[1])
+        else:
+            for card in self.cards :
+                print(card)
+        print("Value " + str(self.getValue()))
+
+
+
+
+
