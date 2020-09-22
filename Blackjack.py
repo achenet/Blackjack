@@ -30,10 +30,35 @@ class Deck:
         return "The deck has " + str(len(self.cards)) + " cards"
 
 
-deck = Deck()
-print(deck)
-deck.shuffle()
-for i in deck.cards:
-    print(i)
+class Hand:
 
+    def __init__(self, dealer=False):
+        self.dealer=dealer
+        self.cards = []
+        self.value = 0
+
+    def addCard(self,card):
+        self.cards.append(card)
+
+
+    def calculatValue(self):
+       self.value = 0
+       aces = 0
+       for card in self.cards():
+           if card.isnumeric():
+               self.value += int(card.value)
+            else:
+                if card.value == "A":
+                    aces += 1
+                    self.value += 11
+                else: 
+                    self.value += 10
+        while self.value > 21 and aces > 0:
+            self.value -= 10
+            aces -=1
+
+
+    def getValue(self):
+        self.calculateValue()
+        return self.value
 
