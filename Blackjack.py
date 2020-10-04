@@ -1,16 +1,53 @@
 # a simple blackjack game
 
+import os
 import random
+import tkinter as tk
 
+assests_folder = os.getcwd() + "/assets"
 
 class Card:
     
     def __init__(self,value,suit):
         self.value = value
         self.suit = suit
+        if self.suit == "Clubs":
+            _suit = "c"
+        elif self.suit == "Diamonds":
+            _suit = "d"
+        elif self.suit == "Hearts":
+            _suit = "h"
+        else:
+            _suit = "s"
+        if self.value == "A":
+            _value = "1"
+        elif self.value == "J":
+            _value = "11"
+        elif self.value == "Q":
+            _value = "12"
+        elif self.value == "K":
+            _value = "13"
+        else:
+            _value = self.value
+        self.img = tk.PhotoImage(file=assets_folder + "Cards/Modern"+_suit+_value+".png")
 
+
+    
+        
     def __repr__(self):
         return " of ".join((self.value, self.suit))
+    
+    @classmethod
+    def get_back_file(cls):
+        cls.back = tk.PhotoImage(file = assets_folder + "Back/Card-Back-06.png")
+        return cls.back
+
+    def get_file(self):
+        return self.img
+
+
+
+
 
 
 class Deck:
@@ -160,6 +197,83 @@ class Game:
             print("You have blackjack! A winner is you!")
         elif dealer:
             print("Dealer has blackjack! Dealer wins. ")
+
+
+
+
+class GameState:
+
+    def __init__(self):
+        self.deck = Deck()
+        self.deck.shuffle()
+
+        self.player_hand = Hand()
+        self.dealer_hand = Hand(dealer=True)
+
+        for i in range(2):
+            self.player_hand.add_card(self.deck.deal())
+            self.dealer_hand.add_card(self.deck.deal())
+
+        self.has_winner = ' '
+
+
+
+
+    def player_is_over(self):
+        return self.player_hand.getValue() > 21
+
+
+
+
+    def someone_has_blackjack(self):er(self):
+        return self.player_hand.get_value() > 21
+   
+    def someone_has_blackjack(self):
+        player = False
+        dealer = False
+        if self.player_hand.get_value() == 21:
+            player = True
+        if self.dealer_hand.get_value() == 21:
+            dealer = True
+        if player and dealer:
+            return 'dp'
+        elif player:
+            return 'p'
+        elif dealer:
+            return 'd'
+        
+        return False
+
+    def hit(self):
+        self.player_hand.add_card(self.deck.deal())
+        if self.someone_has_blackjack() == 'p':
+            self.has_winner = 'p'
+        if self.player_is_over():
+            self.has_winner = 'd'
+
+        return self.has_winner
+
+
+    def get_table_state(self):
+        blackjack = False
+        winner = self.has_winner
+        if not winner:
+            winner = self.someone_has_blackjack()
+            if winner:
+                blackjack = True
+
+        table_state = { 
+                'player_cards' : self.player_hand.cards ,
+                'dealer_cards' : self.dealer_hand.cards,
+                'winner' : winner,
+                'blackjack' : blackjack,
+                }
+        return table_state
+
+
+
+
+
 
 
 if __name__ == "__main__":
